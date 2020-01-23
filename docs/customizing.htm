@@ -1034,6 +1034,7 @@ db_manager.getSql("SELECT SUM(rain) FROM %s "\
                 group_degree_day   = degree_F_day         # Options are 'degree_F_day' or 'degree_C_day'
                 group_distance     = mile                 # Options are 'mile' or 'km'
                 group_pressure     = inHg                 # Options are 'inHg', 'mmHg', 'mbar', or 'hPa'
+                group_pressurerate = inHg_per_hour        # Options are 'inHg_per_hour', 'mmHg_per_hour', 'mbar_per_hour', or 'hPa_per_hour'
                 group_rain         = inch                 # Options are 'inch', 'cm', or 'mm'
                 group_rainrate     = inch_per_hour        # Options are 'inch_per_hour', 'cm_per_hour', or 'mm_per_hour'
                 group_speed        = mile_per_hour        # Options are 'mile_per_hour', 'km_per_hour', 'knot', or 'meter_per_second'
@@ -1071,6 +1072,7 @@ db_manager.getSql("SELECT SUM(rain) FROM %s "\
                 group_degree_day   = <span class="highlight">degree_C_day</span>         # Options are 'degree_F_day' or 'degree_C_day'
                 group_distance     = <span class="highlight">km</span>span>              # Options are 'mile' or 'km'
                 group_pressure     = <span class="highlight">mbar</span>                 # Options are 'inHg', 'mmHg', 'mbar', or 'hPa'
+                group_pressurerate = <span class="highlight">mbar_per_hour</span>        # Options are 'inHg_per_hour', 'mmHg_per_hour', 'mbar_per_hour', or 'hPa_per_hour'
                 group_rain         = <span class="highlight">mm</span>                   # Options are 'inch', 'cm', or 'mm'
                 group_rainrate     = <span class="highlight">mm_per_hour</span>          # Options are 'inch_per_hour', 'cm_per_hour', or 'mm_per_hour'
                 group_speed        = <span class="highlight">meter_per_second</span>     # Options are 'mile_per_hour', 'km_per_hour', 'knot', or 'meter_per_second'
@@ -1119,6 +1121,7 @@ db_manager.getSql("SELECT SUM(rain) FROM %s "\
                 group_degree_day   = degree_C_day         # Options are 'degree_F_day' or 'degree_C_day'
                 group_distance     = km                   # Options are 'mile' or 'km'
                 group_pressure     = mbar                 # Options are 'inHg', 'mmHg', 'mbar', or 'hPa'
+                group_pressurerate = mbar_per_hour        # Options are 'inHg_per_hour', 'mmHg_per_hour', 'mbar_per_hour', or 'hPa_per_hour'
                 group_rain         = mm                   # Options are 'inch', 'cm', or 'mm'
                 group_rainrate     = mm_per_hour          # Options are 'inch_per_hour', 'cm_per_hour', or 'mm_per_hour'
                 group_speed        = meter_per_second     # Options are 'mile_per_hour', 'km_per_hour', 'knot', or 'meter_per_second'
@@ -1139,6 +1142,7 @@ db_manager.getSql("SELECT SUM(rain) FROM %s "\
                 group_degree_day   = degree_F_day         # Options are 'degree_F_day' or 'degree_C_day'
                 group_distance     = mile                 # Options are 'mile' or 'km'
                 group_pressure     = inHg                 # Options are 'inHg', 'mmHg', 'mbar', or 'hPa'
+                group_pressurerate = inHg_per_hour        # Options are 'inHg_per_hour', 'mmHg_per_hour', 'mbar_per_hour', or 'hPa_per_hour'
                 group_rain         = inch                 # Options are 'inch', 'cm', or 'mm'
                 group_rainrate     = inch_per_hour        # Options are 'inch_per_hour', 'cm_per_hour', or 'mm_per_hour'
                 group_speed        = mile_per_hour        # Options are 'mile_per_hour', 'km_per_hour', 'knot', or 'meter_per_second'
@@ -1877,9 +1881,9 @@ $month.outTemp.max</pre>
         </p>
 
         <p class="indent">
-            <span class="code">obstype</span> is an observation type, such as <span class="code">barometer</span>. See
-            <em><a href="#archive_types">Appendix: Archive Types</a></em> for a table of observation types valid for
-            time period <span class="code">current.</span>
+            <span class="code">obstype</span> is an observation type, such as <span
+            class="code">barometer</span>. This type must appear either as a field in the database,
+            or in the current (usually, the latest) record.</span>
         </p>
 
         <p class="indent">
@@ -2471,9 +2475,7 @@ or in foobar units: $day.barometer.min.foobar
         </p>
 
         <p class="indent">
-            <span class="code">obstype</span> is a observation type, such as <span class="code">outTemp</span>, that is
-            supported by the <span class="code">$current</span> tag. See <em><a href="#archive_types">Appendix: Archive
-            Types</a></em> for a table of observation types supported by the <span class="code">$current</span> tag.
+            <span class="code">obstype</span> is a observation type, such as <span class="code">outTemp</span>.
         </p>
 
         <p class="indent">
@@ -3830,7 +3832,7 @@ class MyStats(SearchList):                                                   # 1
         # The class to manage the database
         manager = weewx.wxmanager.DaySummaryManager
         # The schema defines to structure of the database contents
-        schema = schemas.wview.schema
+        schema = schemas.wview_extended.schema
 
 <span class="highlight">    [[wmr100_binding]]
         # Binding for my WMR100 on the RPi
@@ -3840,7 +3842,7 @@ class MyStats(SearchList):                                                   # 1
         # The class to manage the database
         manager = weewx.wxmanager.DaySummaryManager
         # The schema defines to structure of the database contents
-        schema = schemas.wview.schema</span>
+        schema = schemas.wview_extended.schema</span>
 
 [Databases]
     # This section binds to the actual database to be used
@@ -4064,6 +4066,7 @@ class MyStats(SearchList):                                                   # 1
             latlon_formats = "%02d", "%03d", "%05.2f"
             [[[[Generic]]]]
                 barometer      = <span class="highlight">Barometer</span>
+                barometerRate  = <span class="highlight">Barometer Change Rate</span>
                 dewpoint       = <span class="highlight">Dew Point</span>
                 ET             = <span class="highlight">ET</span>
                 heatindex      = <span class="highlight">Heat Index</span>
@@ -4603,9 +4606,9 @@ class AddElectricity(StdService):
 
         <h1 id="archive_database">Customizing the database</h1>
 
-        <p>For most users the default database will work just fine. It has the added advantage of being compatible with
-            the wview database. Nevertheless, there may be occasions where you may want to add a new SQL type to your
-            database, or change its unit system. This section shows you how to do this.
+        <p>For most users the default database will work just fine. However, there may be occasions
+            where you may want to add a new SQL type to your database, or change its unit system.
+            This section shows you how to do this.
         </p>
 
         <h2 id="add_archive_type">Adding a new type to the database</h2>
@@ -4648,26 +4651,34 @@ class AddElectricity(StdService):
         <ol>
             <li>
                 <p>
-                    <strong>Extend the existing schema with the new type.</strong> The schema that comes with WeeWX is
-                    the same as what wview uses. It's located in the file <span class="code">schemas/wview.py</span>
-                    &mdash; take a look at it now. We could just modify it <em>in situ</em>, but that would run the risk
-                    of confusing the two versions. Besides, our changes would get lost at the next upgrade.
-                    Alternatively, we could copy the file over to a new location, and then modify that. But, because our
-                    change is just a simple addition, we're going to import the wview schema, then just add on our new
-                    type.
+                    <strong>Extend the existing schema with the new type.</strong> The schema that
+                    comes with WeeWX is a superset of the schema that the weather program
+                    <em>wview</em> uses. It's located in the file <span
+                    class="code">schemas/wview_extended.py</span> &mdash; take a look at it now. We
+                    could just modify it <em>in situ</em>, but that would run the risk of confusing
+                    the two versions. Besides, our changes would get lost at the next upgrade.
+                    Alternatively, we could copy the file over to a new location, and then modify
+                    that. But, because our change is just a simple addition, we're going to import
+                    the old schema, then just add on our new type.
                 </p>
                 <p>
                     For this example, we are going to add a few lines of code to the bottom of the file <span
                     class="code">user/electricity.py</span>:
                 </p>
-                <pre class="tty">import schemas.wview
-schema_with_electricity = schemas.wview.schema + [('electricity', 'REAL')]
+                <pre class="tty">import schemas.wview_extended
+
+schema_with_electricity = {
+    'table': schemas.wview_extended.table + [('electricity', 'REAL')],
+    'day_summaries' : schemas.wview_extended.day_summaries + [('electricity', 'SCALAR')]
+}
 </pre>
                 <p>
-                    This creates a new schema with the name
-                    <span class="code">user.electricity.schema_with_electricity</span>,
-                    which is just like the old one, except it has a new type, <span class="code">electricity</span>,
-                    tacked on to the end.
+                    This creates a new schema with the name <span
+                    class="code">user.electricity.schema_with_electricity</span>, which is just
+                    like the old one, except it has a new type, <span
+                    class="code">electricity</span>, tacked on to the end of both the main archive
+                    table, and the daily summaries. Its schema type is REAL. Its corresponding
+                    daily summary will treat it as a SCALAR.
                 </p>
             <li>
                 <p>
@@ -5613,6 +5624,13 @@ UV      = UV Index</pre>
             (inches of mercury), <span class="code">mbar</span>, or <span class="code">hPa</span>.
         </p>
 
+        <p class="config_important">group_pressurerate</p>
+
+        <p>
+            The measurement unit to be used for rate of change in pressure. Possible options are one of <span class="code">inHg_per_hour</span>
+            (inches of mercury per hour), <span class="code">mbar_per_hour</span>, or <span class="code">hPa_per_hour</span>.
+        </p>
+
         <p class="config_option">group_radiation</p>
 
         <p>
@@ -6365,361 +6383,6 @@ growing_base = 50.0, degree_F</pre>
         <p>The Standard skin uses three generators: CheetahGenerator, ImageGenerator, and CopyGenerator.</p>
 
 
-        <h1 id="archive_types">Appendix: Archive Types</h1>
-
-        <p>
-            <em>Archive types</em> are weather observations that have come from your instrument and been stored in the
-            <em>archive database</em>, a SQL database. They represent the <em>current conditions</em> as of some time.
-            They are available to be used in two places:
-        </p>
-        <ul>
-            <li>In your template files as a tag with period <span class="code">$current</span>. Hence, the tag <span
-                class="code">$current.outTemp</span> represents the latest current outside temperature.
-            </li>
-            <li>In your plot graphs. Here, a line in the graph represents the set of current observations over a time
-                period. While each plot point in a graph may represent an aggregation, do not confuse this aggregation
-                with the statistical aggregation. The former is done with the archive database, the latter with the
-                statistical database.
-            </li>
-        </ul>
-        <p>
-            The following table shows all the possible archive types and whether they can be used in tag <span
-            class="code">$current</span> or in a plot. Note that just because a type appears in the table does not
-            necessarily mean that it is available for <em>your</em> station setup. That would depend on whether your
-            instrument supports the type.
-        </p>
-        <table class="indent">
-            <caption>Archive types</caption>
-            <tbody>
-            <tr class="first_row">
-                <td>Archive Type</td>
-                <td style="width: 200px">SQL Type<br/> <span style="font-size: 80%">(appears in archive
-                database)</span></td>
-                <td>Can be used <br/> in plots
-                </td>
-                <td>Can be used <br/> in tag <span class="code">$current</span></td>
-            </tr>
-            <tr>
-                <td class="first_col code">altimeter</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">barometer</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">consBatteryVoltage</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">dateTime</td>
-                <td>X</td>
-                <td><br/></td>
-                <td>X (represents current time)</td>
-            </tr>
-            <tr>
-                <td class="first_col code">dewpoint</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">ET</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">extraHumid1</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">extraHumid2</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">extraTemp1</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">extraTemp2</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">extraTemp3</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">hail</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">hailRate</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">heatindex</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">heatingTemp</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">heatingVoltage</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">inHumidity</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">inTemp</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">inTempBatteryStatus</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">interval</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">leafTemp1</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">leafTemp2</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">leafWet1</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">leafWet2</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">outHumidity</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">outTemp</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">outTempBatteryStatus</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">pressure</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">radiation</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">rain</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">rainBatteryStatus</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">rainRate</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">referenceVoltage</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">rxCheckPercent</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">soilMoist1</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">soilMoist2</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">soilMoist3</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">soilMoist4</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">soilTemp1</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">soilTemp2</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">soilTemp3</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">soilTemp4</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">supplyVoltage</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">txBatteryStatus</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">usUnits</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">UV</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">windvec</td>
-                <td> </td>
-                <td>X (special vector type)</td>
-                <td> </td>
-            </tr>
-            <tr>
-                <td class="first_col code">windBatteryStatus</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">windDir</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">windGust</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">windGustDir</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">windSpeed</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            <tr>
-                <td class="first_col code">windchill</td>
-                <td>X</td>
-                <td>X</td>
-                <td>X</td>
-            </tr>
-            </tbody>
-        </table>
-
         <h1 id="aggregation_types">Appendix: Aggregation types</h1>
 
         <table class="indent">
@@ -7079,8 +6742,18 @@ growing_base = 50.0, degree_F</pre>
                 <td>mbar</td>
             </tr>
             <tr>
+                <td class="first_col">group_pressurerate</td>
+                <td>barometerRate <br/> altimeterRate <br/> pressureRate
+                </td>
+                <td>inHg_per_hour <br/> mbar_per_hour <br/> hPa_per_hour
+                </td>
+                <td>inHg_per_hour</td>
+                <td>mbar_per_hour</td>
+                <td>mbar_per_hour</td>
+            </tr>
+            <tr>
                 <td class="first_col">group_radiation</td>
-                <td>radiation</td>
+                <td>maxSolarRad <br/> radiation</td>
                 <td>watt_per_meter_squared</td>
                 <td>watt_per_meter_squared</td>
                 <td>watt_per_meter_squared</td>
@@ -7167,11 +6840,11 @@ growing_base = 50.0, degree_F</pre>
             <tr>
                 <td class="first_col">group_volume</td>
                 <td></td>
-                <td>cubic_foot<br/> gallon<br/> litre
+                <td>cubic_foot<br/> gallon<br/> liter
                 </td>
                 <td>gallon</td>
-                <td>litre</td>
-                <td>litre</td>
+                <td>liter</td>
+                <td>liter</td>
             </tr>
             <tr>
                 <td class="first_col">group_NONE</td>
