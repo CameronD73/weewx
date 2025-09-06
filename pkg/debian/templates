@@ -1,9 +1,9 @@
 Template: weewx/units
 Type: select
-Default: US
-Choices: US, Metric
+Default: us
+Choices: us, metric, metricwx
 Description: display units:
- Data can be displayed in any combination of units.  The default display is either US (F, inHg, in, mph) or Metric (C, mbar, mm, km/h).  The units can be changed later without affecting any existing data.
+ Choose a unit system: us (F, inHg, in, mph), metric (C, mbar, cm, km/h), or metricwx (C, mbar, mm, m/s).  The unit system can be modified later to any combination of units.
 
 Template: weewx/location
 Type: string
@@ -23,9 +23,20 @@ Default: 0, meter
 Description: altitude of the weather station:
  Normally the altitude is downloaded from the station hardware, but not all stations support this.  Specify the altitude of the station and the singular form of the unit used for the altitude, for example '700, foot' or '120, meter'
 
+Template: weewx/register
+Type: boolean
+Default: false
+Description: register this station?
+ The station can be registered at weewx.com, where it will be included in a map. Registration requires a unique URL to identify the station, such as a website, or a WeatherUnderground link.
+
+Template: weewx/station_url
+Type: string
+Description: unique URL for the station:
+ Provide a unique URL for the station. It must be a valid URL, starting with 'http://' or 'https://'
+
 Template: weewx/station_type
 Type: select
-Choices: Simulator, AcuRite, CC3000, FineOffsetUSB, TE923, Ultimeter, Vantage, WMR100, WMR200, WMR300, WMR9x8, WS1, WS23xx, WS28xx
+Choices: Simulator, AcuRite, CC3000, FineOffsetUSB, TE923, Ultimeter, Vantage, WMR100, WMR300, WMR9x8, WS1, WS23xx, WS28xx
 Default: Simulator
 Description: weather station type:
  The weather station hardware type.  Specify simulator to run weewx without a weather station.
@@ -96,12 +107,6 @@ Type: string
 Default: WMR100
 Description: weather station model:
  Specify the station model, for example WMR100, WMR100A, WMRS200.
-
-Template: weewx/wmr200_model
-Type: string
-Default: WMR200
-Description: weather station model:
- Specify the station model, for example WMR200, WMR200A.
 
 Template: weewx/wmr300_model
 Type: string
